@@ -74,12 +74,17 @@ public class PrintStorage {
   }
 
   PrintEntry fromRow(Row row) {
+    PrintEntry entry = fromRowWithoutContent(row);
+    entry.setContent(row.getString("content"));
+    return entry;
+  }
+
+  PrintEntry fromRowWithoutContent(Row row) {
     PrintEntry entry = new PrintEntry();
     entry.setId(row.getUUID("id"));
     entry.setCreated(row.getLocalDateTime("created").atZone(ZoneId.of(ZoneOffset.UTC.getId())));
     entry.setType(PrintEntryType.valueOf(row.getString("type")));
     entry.setSortingField(row.getString("sorting_field"));
-    entry.setContent(row.getString("content"));
     return entry;
   }
 
@@ -221,7 +226,7 @@ public class PrintStorage {
     Tuple tuple = Tuple.tuple();
     int sqlStreamFetchSize = 100;
 
-    return connection.prepare(query)
+    return connection.prepare("SELECT id, created, type, sorting_field FROM " + query)
         .compose(pq ->
             connection.begin().map(tx -> {
               response.setChunked(true);
@@ -233,7 +238,7 @@ public class PrintStorage {
                 if (!first.getAndSet(false)) {
                   response.write(",");
                 }
-                PrintEntry entry = fromRow(row);
+                PrintEntry entry = fromRowWithoutContent(row);
                 response.write(JsonObject.mapFrom(entry).encode());
               });
               stream.endHandler(end -> {
@@ -286,7 +291,7 @@ public class PrintStorage {
 
     Pair<String, String> sqlQuery = createSqlQuery(cqlQuery, offset, limit);
 
-    return pool.preparedQuery(sqlQuery.getLeft())
+    return pool.preparedQuery("SELECT * FROM " + sqlQuery.getLeft())
         .execute()
         .map(rowSet -> {
           RowIterator<Row> iterator = rowSet.iterator();
@@ -309,7 +314,7 @@ public class PrintStorage {
     String sqlOrderBy = pgCqlQuery.getOrderByClause();
     String from = printTable + " WHERE "
         + (pgCqlQuery.getWhereClause() == null ? "1 = 1" : pgCqlQuery.getWhereClause());
-    String sqlQuery = "SELECT * FROM " + from
+    String sqlQuery = from
         + (sqlOrderBy == null ? "" : " ORDER BY " + sqlOrderBy)
         + " LIMIT " + limit + " OFFSET " + offset;
 

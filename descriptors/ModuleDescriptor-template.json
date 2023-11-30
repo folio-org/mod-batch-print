@@ -23,7 +23,7 @@
       ]
     },
     {
-      "id": "mail",
+      "id": "batch-print",
       "version": "1.0",
       "handlers": [
         {
