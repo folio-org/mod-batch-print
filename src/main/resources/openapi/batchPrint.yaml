@@ -10,13 +10,14 @@ paths:
       - $ref: headers/okapi-token.yaml
       - $ref: headers/okapi-url.yaml
       - $ref: headers/okapi-user.yaml
-      - $ref: parameters/limit.yaml
-      - $ref: parameters/offset.yaml
-      - $ref: parameters/query.yaml
     get:
       description: >
         Get batch printing entries with optional CQL query.
-        X-Okapi-Permissions must include mod-batch-print.print.read
+        X-Okapi-Permissions must include batch-print.entries.collection.get
+      parameters:
+        - $ref: parameters/limit.yaml
+        - $ref: parameters/offset.yaml
+        - $ref: parameters/query.yaml
       operationId: getPrintEntries
       responses:
         "200":
@@ -31,10 +32,24 @@ paths:
           $ref: "#/components/responses/trait_404"
         "500":
           $ref: "#/components/responses/trait_500"
+    delete:
+      description: >
+        Delete batch printing entries by  comma separated IDs.
+        X-Okapi-Permissions must include batch-print.entries.collection.delete
+      parameters:
+        - $ref: parameters/ids.yaml
+      operationId: deletePrintEntries
+      responses:
+        "204":
+          description: Print entries deleted
+        "400":
+          $ref: "#/components/responses/trait_400"
+        "500":
+          $ref: "#/components/responses/trait_500"
     post:
       description: >
         Create print entry.
-        X-Okapi-Permissions must include mod-batch-print.print.write
+        X-Okapi-Permissions must include batch-print.entries.item.post
       operationId: postPrintEntry
       requestBody:
         content:
@@ -69,7 +84,7 @@ paths:
     get:
       description: >
         Get print entry by id.
-        X-Okapi-Permissions must include mod-batch-print.print.read
+        X-Okapi-Permissions must include batch-print.entries.item.get
       operationId: getPrintEntry
       responses:
         "200":
@@ -89,7 +104,7 @@ paths:
     delete:
       description: >
         Delete print entry.
-        X-Okapi-Permissions must include mod-batch-print.print.write
+        X-Okapi-Permissions must include batch-print.entries.item.delete
       operationId: deletePrintEntry
       responses:
         "204":
@@ -103,7 +118,7 @@ paths:
     put:
       description: >
         Update print entry.
-        X-Okapi-Permissions must include mod-batch-print.print.write
+        X-Okapi-Permissions must include batch-print.entries.item.put
       operationId: updatePrintEntry
       requestBody:
         content:
@@ -129,7 +144,7 @@ paths:
     post:
       description: >
         Send mail to create print entry.
-        X-Okapi-Permissions must include mod-batch-print.print.write
+        X-Okapi-Permissions must include batch-print.entries.mail.post
       operationId: saveMail
       requestBody:
         content:
@@ -159,7 +174,7 @@ paths:
     post:
       description: >
         Send mail to create print entry.
-        X-Okapi-Permissions must include mod-batch-print.print.write
+        X-Okapi-Permissions must include batch-print.print.write
       operationId: createBatch
       responses:
         "204":

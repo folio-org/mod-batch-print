@@ -28,9 +28,9 @@ public class BatchCreationService {
    */
   public static void process(RoutingContext ctx) {
     String tenant = ctx.request().getHeader(XOkapiHeaders.TENANT);
-    LOGGER.debug("process:: tenant {}", tenant);
     PrintStorage printStorage = new PrintStorage(ctx.vertx(), tenant);
     LocalDateTime localDateTime = LocalDateTime.now().minusDays(1).minusMinutes(5);
+    LOGGER.info("process:: tenant {}, from {}", tenant, localDateTime);
 
     printStorage.getEntriesByQuery("type=\"SINGLE\" and created > " + localDateTime
                     + " sortby sortingField created", 0, MAX_COUNT_IN_BATCH)
@@ -41,6 +41,7 @@ public class BatchCreationService {
   }
 
   private static void processListAndSaveResult(List<PrintEntry> entries, PrintStorage storage) {
+    LOGGER.info("processListAndSaveResult:: {} entries will be processed", entries.size());
     if (!entries.isEmpty()) {
       byte[] merged = PdfService.combinePdfFiles(entries);
       PrintEntry batch = new PrintEntry();
@@ -49,6 +50,8 @@ public class BatchCreationService {
       batch.setType(PrintEntryType.BATCH);
       batch.setContent(Hex.getString(merged));
       storage.createEntry(batch);
+      List<UUID> ids = entries.stream().map(PrintEntry::getId).toList();
+      storage.deleteEntries(ids);
     }
   }
 }
