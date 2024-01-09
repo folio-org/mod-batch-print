@@ -29,7 +29,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <okapi.version>4.14.10</okapi.version>
+    <okapi.version>5.1.2</okapi.version>
     <vertxlib.version>3.1.2</vertxlib.version>
     <lombok.version>1.18.28</lombok.version>
     <pdfbox.version>2.0.28</pdfbox.version>
