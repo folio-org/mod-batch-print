@@ -1,12 +1,12 @@
 package org.folio.print.server.service;
 
 import com.lowagie.text.DocumentException;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -57,11 +57,7 @@ public class PdfService {
         PDFMergerUtility pdfMerger = new PDFMergerUtility();
         entries.forEach(e -> {
           if (e.getContent() != null && !e.getContent().isBlank()) {
-            try {
-              pdfMerger.addSource(new ByteArrayInputStream(Hex.decodeHex(e.getContent())));
-            } catch (IOException ex) {
-              LOGGER.error("Failed to merge entry: " + e.getId(), ex);
-            }
+            pdfMerger.addSource(new RandomAccessReadBuffer(Hex.decodeHex(e.getContent())));
           }
         });
         pdfMerger.setDestinationStream(mergedOutputStream);
