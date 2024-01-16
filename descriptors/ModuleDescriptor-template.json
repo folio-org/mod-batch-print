@@ -32,10 +32,10 @@
           ],
           "pathPattern": "/print/entries",
           "permissionsRequired": [
-            "mod-batch-print.entries.item.post"
+            "batch-print.entries.item.post"
           ],
           "permissionsDesired": [
-            "mod-batch-print.print.write"
+            "batch-print.print.write"
           ]
         },
         {
@@ -44,10 +44,22 @@
           ],
           "pathPattern": "/print/entries",
           "permissionsRequired": [
-            "mod-batch-print.entries.collection.get"
+            "batch-print.entries.collection.get"
           ],
           "permissionsDesired": [
-            "mod-batch-print.print.read"
+            "batch-print.print.read"
+          ]
+        },
+        {
+          "methods": [
+            "DELETE"
+          ],
+          "pathPattern": "/print/entries",
+          "permissionsRequired": [
+            "batch-print.entries.item.delete"
+          ],
+          "permissionsDesired": [
+            "batch-print.print.write"
           ]
         },
         {
@@ -56,10 +68,10 @@
           ],
           "pathPattern": "/print/entries/{id}",
           "permissionsRequired": [
-            "mod-batch-print.entries.item.get"
+            "batch-print.entries.item.get"
           ],
           "permissionsDesired": [
-            "mod-batch-print.print.read"
+            "batch-print.print.read"
           ]
         },
         {
@@ -68,10 +80,10 @@
           ],
           "pathPattern": "/print/entries/{id}",
           "permissionsRequired": [
-            "mod-batch-print.entries.item.put"
+            "batch-print.entries.item.put"
           ],
           "permissionsDesired": [
-            "mod-batch-print.print.write"
+            "batch-print.print.write"
           ]
         },
         {
@@ -80,10 +92,10 @@
           ],
           "pathPattern": "/print/entries/{id}",
           "permissionsRequired": [
-            "mod-batch-print.entries.item.delete"
+            "batch-print.entries.item.delete"
           ],
           "permissionsDesired": [
-            "mod-batch-print.print.write"
+            "batch-print.print.write"
           ]
         },
         {
@@ -92,10 +104,10 @@
           ],
           "pathPattern": "/mail",
           "permissionsRequired": [
-            "mod-batch-print.entries.mail.post"
+            "batch-print.entries.mail.post"
           ],
           "permissionsDesired": [
-            "mod-batch-print.print.write"
+            "batch-print.print.write"
           ]
         }
       ]
@@ -111,11 +123,11 @@
           ],
           "pathPattern": "/print/batch-creation",
           "modulePermissions": [
-            "mod-batch-print.print.write",
-            "mod-batch-print.print.read"
+            "batch-print.print.write",
+            "batch-print.print.read"
           ],
           "schedule": {
-            "cron": "1 7 * * *",
+            "cron": "1 6 * * *",
             "zone": "CET"
           }
         }
@@ -125,60 +137,60 @@
   "requires": [],
   "permissionSets": [
     {
-      "permissionName": "mod-batch-print.print.write",
+      "permissionName": "batch-print.print.write",
       "displayName": "batch print - write print entries",
       "description": "Write print entries",
       "visible": false
     },
     {
-      "permissionName": "mod-batch-print.print.read",
+      "permissionName": "batch-print.print.read",
       "displayName": "batch print - read print entries",
       "description": "Read print entries",
       "visible": false
     },
     {
-      "permissionName": "mod-batch-print.entries.mail.post",
+      "permissionName": "batch-print.entries.mail.post",
       "displayName": "batch print - send mail",
       "description": "Send mail to print"
     },
     {
-      "permissionName": "mod-batch-print.entries.item.post",
+      "permissionName": "batch-print.entries.item.post",
       "displayName": "batch print - create print entry",
       "description": "Create print entry"
     },
     {
-      "permissionName": "mod-batch-print.entries.item.put",
+      "permissionName": "batch-print.entries.item.put",
       "displayName": "batch print - update print entry",
       "description": "Update print entry"
     },
     {
-      "permissionName": "mod-batch-print.entries.collection.get",
+      "permissionName": "batch-print.entries.collection.get",
       "displayName": "batch print - get print entries",
       "description": "Get batch print"
     },
     {
-      "permissionName": "mod-batch-print.entries.item.get",
+      "permissionName": "batch-print.entries.item.get",
       "displayName": "batch print - get print entry",
       "description": "Get print entry"
     },
     {
-      "permissionName": "mod-batch-print.entries.item.delete",
+      "permissionName": "batch-print.entries.item.delete",
       "displayName": "batch print - delete print entry",
       "description": "Delete print entry"
     },
     {
-      "permissionName": "mod-batch-print.entries.all",
+      "permissionName": "batch-print.entries.all",
       "displayName": "batch print - all batch print permissions",
       "description": "All batch print permissions",
       "subPermissions": [
-        "mod-batch-print.entries.item.post",
-        "mod-batch-print.entries.collection.get",
-        "mod-batch-print.entries.item.get",
-        "mod-batch-print.entries.item.put",
-        "mod-batch-print.entries.item.delete",
-        "mod-batch-print.entries.mail.post",
-        "mod-batch-print.print.write",
-        "mod-batch-print.print.read"
+        "batch-print.entries.item.post",
+        "batch-print.entries.collection.get",
+        "batch-print.entries.item.get",
+        "batch-print.entries.item.put",
+        "batch-print.entries.item.delete",
+        "batch-print.entries.mail.post",
+        "batch-print.print.write",
+        "batch-print.print.read"
       ]
     }
   ],

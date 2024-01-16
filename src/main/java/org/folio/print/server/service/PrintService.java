@@ -13,6 +13,8 @@ import io.vertx.ext.web.validation.RequestParameters;
 import io.vertx.ext.web.validation.ValidationHandler;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -76,7 +78,12 @@ public class PrintService implements RouterCreator, TenantInitHooks {
             .onFailure(cause -> commonError(ctx, cause))
         )
         .failureHandler(this::failureHandler);
-
+    routerBuilder
+        .operation("deletePrintEntries")
+        .handler(ctx -> deletePrintEntries(ctx)
+            .onFailure(cause -> commonError(ctx, cause))
+        )
+        .failureHandler(this::failureHandler);
     routerBuilder
         .operation("postPrintEntry")
         .handler(ctx -> postPrintEntry(ctx)
@@ -128,10 +135,13 @@ public class PrintService implements RouterCreator, TenantInitHooks {
   }
 
   Future<Void> postPrintEntry(RoutingContext ctx) {
+    log.info("postPrintEntry:: create entry");
     PrintStorage storage = create(ctx);
     RequestParameters params = ctx.get(ValidationHandler.REQUEST_CONTEXT_KEY);
     RequestParameter body = params.body();
     PrintEntry entry = body.getJsonObject().mapTo(PrintEntry.class);
+    log.info("postPrintEntry:: entry with type {}, sorting field{}",
+        entry.getType(), entry.getSortingField());
     return storage.createEntry(entry)
         .map(entity -> {
           ctx.response().setStatusCode(204);
@@ -140,7 +150,26 @@ public class PrintService implements RouterCreator, TenantInitHooks {
         });
   }
 
+  Future<Void> deletePrintEntries(RoutingContext ctx) {
+    PrintStorage storage = create(ctx);
+    RequestParameters params = ctx.get(ValidationHandler.REQUEST_CONTEXT_KEY);
+    RequestParameter idsParameter = params.queryParameter("ids");
+    String ids = idsParameter != null ? idsParameter.getString() : "";
+    log.info("deletePrintEntries:: delete entries by ids: {}", ids);
+    List<UUID> uuids = Arrays.stream(ids.split(","))
+        .filter(id -> id != null && !id.isBlank())
+        .map(UUID::fromString)
+        .toList();
+    return storage.deleteEntries(uuids)
+        .map(r -> {
+          ctx.response().setStatusCode(204);
+          ctx.response().end();
+          return null;
+        });
+  }
+
   Future<Void> saveMail(RoutingContext ctx) {
+    log.info("saveMail:: create single entry");
     final PrintStorage storage = create(ctx);
     RequestParameters params = ctx.get(ValidationHandler.REQUEST_CONTEXT_KEY);
     RequestParameter body = params.body();
@@ -151,6 +180,8 @@ public class PrintService implements RouterCreator, TenantInitHooks {
     entry.setCreated(ZonedDateTime.now().withZoneSameInstant(ZoneOffset.UTC));
     entry.setSortingField(message.getTo());
     entry.setContent(Hex.getString(PdfService.createPdfFile(message.getBody())));
+    log.info("saveMail:: entry with type {}, sorting field{}",
+        entry.getType(), entry.getSortingField());
     return storage.createEntry(entry)
         .map(entity -> {
           ctx.response().setStatusCode(HttpResponseStatus.OK.code());
@@ -163,6 +194,7 @@ public class PrintService implements RouterCreator, TenantInitHooks {
     PrintStorage storage = create(ctx);
     RequestParameters params = ctx.get(ValidationHandler.REQUEST_CONTEXT_KEY);
     String id  = params.pathParameter("id").getString();
+    log.info("getPrintEntry:: get single entry by id: {}", id);
     return storage.getEntry(UUID.fromString(id))
         .map(entity -> {
           HttpResponse.responseJson(ctx, 200)
@@ -175,6 +207,7 @@ public class PrintService implements RouterCreator, TenantInitHooks {
     PrintStorage printStorage = create(ctx);
     RequestParameters params = ctx.get(ValidationHandler.REQUEST_CONTEXT_KEY);
     String id  = params.pathParameter("id").getString();
+    log.info("deletePrintEntry:: delete single entry by id: {}", id);
     return printStorage.deleteEntry(UUID.fromString(id))
         .map(res -> {
           ctx.response().setStatusCode(204);
@@ -189,6 +222,7 @@ public class PrintService implements RouterCreator, TenantInitHooks {
     RequestParameter body = params.body();
     PrintEntry entry = body.getJsonObject().mapTo(PrintEntry.class);
     UUID id  = UUID.fromString(params.pathParameter("id").getString());
+    log.info("updatePrintEntry:: update single entry by id: {}", id);
     if (!id.equals(entry.getId())) {
       return Future.failedFuture(new EntryException("id mismatch"));
     }
@@ -207,6 +241,8 @@ public class PrintService implements RouterCreator, TenantInitHooks {
     String query = queryParameter != null ? queryParameter.getString() : null;
     int limit = params.queryParameter("limit").getInteger();
     int offset = params.queryParameter("offset").getInteger();
+    log.info("getPrintEntries:: get entries by query: {}, limit {}, offset {}",
+        query, limit, offset);
     return storage.getEntries(ctx.response(), query, offset, limit);
   }
 
