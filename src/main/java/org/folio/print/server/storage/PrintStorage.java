@@ -39,6 +39,7 @@ public class PrintStorage {
 
   private static final String CREATE_IF_NO_EXISTS = "CREATE TABLE IF NOT EXISTS ";
   private static final String WHERE_BY_ID = " WHERE id = $1";
+  private static final String WHERE_BY_IDS = " WHERE id in (%s)";
 
   private final TenantPgPool pool;
 
@@ -165,6 +166,29 @@ public class PrintStorage {
             return null;
           });
     });
+  }
+
+  /**
+   * Delete print entries by ID list.
+   *
+   * @param uuids entry identifiers
+   * @return async result; exception if not found or forbidden
+   */
+  public Future<Void> deleteEntries(List<UUID> uuids) {
+    if (uuids.isEmpty()) {
+      return Future.succeededFuture();
+    }
+    Tuple tuple = Tuple.tuple();
+    StringBuilder replacement = new StringBuilder();
+    int counter = 1;
+    for (UUID id : uuids) {
+      tuple.addUUID(id);
+      replacement.append((replacement.isEmpty()) ? "$" + counter++ : ", $" + counter++);
+    }
+    return pool.preparedQuery(
+              "DELETE FROM " + printTable + String.format(WHERE_BY_IDS, replacement))
+          .execute(tuple)
+          .map(res -> null);
   }
 
   /**

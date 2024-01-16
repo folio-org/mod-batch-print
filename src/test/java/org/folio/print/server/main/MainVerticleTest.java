@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.folio.okapi.common.XOkapiHeaders;
@@ -259,6 +261,7 @@ public class MainVerticleTest extends TestBase {
 
   @Test
   public void testGetPrintEntries() {
+    List<String> ids = new ArrayList<>();
     PrintEntry entry = new PrintEntry();
     entry.setCreated(ZonedDateTime.now().withZoneSameInstant(ZoneOffset.UTC));
     entry.setType(PrintEntryType.SINGLE);
@@ -268,6 +271,7 @@ public class MainVerticleTest extends TestBase {
       entry.setSortingField("A" + (5 - i));
       entry.setType(i % 2 == 0 ? PrintEntryType.SINGLE : PrintEntryType.BATCH);
       JsonObject en = JsonObject.mapFrom(entry);
+      ids.add(entry.getId().toString());
       RestAssured.given()
           .header(XOkapiHeaders.TENANT, TENANT_1)
           .header(XOkapiHeaders.PERMISSIONS, permWrite.encode())
@@ -321,7 +325,6 @@ public class MainVerticleTest extends TestBase {
         .body("items", hasSize(1))
         .body("resultInfo.totalRecords", is(1));
 
-
     RestAssured.given()
         .header(XOkapiHeaders.TENANT, TENANT_1)
         .header(XOkapiHeaders.PERMISSIONS, permRead.encode())
@@ -333,7 +336,6 @@ public class MainVerticleTest extends TestBase {
         .contentType(ContentType.JSON)
         .body("items", hasSize(greaterThanOrEqualTo(2)))
         .body("resultInfo.totalRecords", is(greaterThanOrEqualTo(2)));
-
 
     RestAssured.given()
         .header(XOkapiHeaders.TENANT, TENANT_1)
@@ -347,6 +349,79 @@ public class MainVerticleTest extends TestBase {
         .body("items[0].sortingField", is("A3"))
         .body("items[1].sortingField", is("A5"))
         .body("resultInfo.totalRecords", is(greaterThanOrEqualTo(2)));
+  }
+
+  @Test
+  public void testDeletePrintEntries() {
+    List<String> ids = new ArrayList<>();
+    PrintEntry entry = new PrintEntry();
+    entry.setCreated(ZonedDateTime.now().withZoneSameInstant(ZoneOffset.UTC));
+    entry.setType(PrintEntryType.SINGLE);
+    for (int i = 0; i < 3; i++) {
+      entry.setId(UUID.randomUUID());
+      entry.setContent("A" + i);
+      entry.setSortingField("A" + (5 - i));
+      entry.setType(i % 2 == 0 ? PrintEntryType.SINGLE : PrintEntryType.BATCH);
+      JsonObject en = JsonObject.mapFrom(entry);
+      ids.add(entry.getId().toString());
+      RestAssured.given()
+          .header(XOkapiHeaders.TENANT, TENANT_1)
+          .header(XOkapiHeaders.PERMISSIONS, permWrite.encode())
+          .contentType(ContentType.JSON)
+          .body(en.encode())
+          .post("/print/entries")
+          .then()
+          .statusCode(204);
+    }
+
+    int count = RestAssured.given()
+        .header(XOkapiHeaders.TENANT, TENANT_1)
+        .header(XOkapiHeaders.PERMISSIONS, permRead.encode())
+        .queryParam("limit", "100")
+        .get("/print/entries")
+        .then()
+        .statusCode(200)
+        .contentType(ContentType.JSON)
+        .body("resultInfo.totalRecords", is(greaterThanOrEqualTo(3)))
+        .extract()
+        .jsonPath()
+        .getInt("resultInfo.totalRecords");
+
+    RestAssured.given()
+        .header(XOkapiHeaders.TENANT, TENANT_1)
+        .header(XOkapiHeaders.PERMISSIONS, permRead.encode())
+        .queryParam("ids", "")
+        .delete("/print/entries")
+        .then()
+        .statusCode(204);
+
+    RestAssured.given()
+        .header(XOkapiHeaders.TENANT, TENANT_1)
+        .header(XOkapiHeaders.PERMISSIONS, permRead.encode())
+        .queryParam("limit", "100")
+        .get("/print/entries")
+        .then()
+        .statusCode(200)
+        .contentType(ContentType.JSON)
+        .body("resultInfo.totalRecords", is(greaterThanOrEqualTo(count)));
+
+    RestAssured.given()
+        .header(XOkapiHeaders.TENANT, TENANT_1)
+        .header(XOkapiHeaders.PERMISSIONS, permRead.encode())
+        .queryParam("ids", String.join(",", ids))
+        .delete("/print/entries")
+        .then()
+        .statusCode(204);
+
+    RestAssured.given()
+        .header(XOkapiHeaders.TENANT, TENANT_1)
+        .header(XOkapiHeaders.PERMISSIONS, permRead.encode())
+        .queryParam("limit", "100")
+        .get("/print/entries")
+        .then()
+        .statusCode(200)
+        .contentType(ContentType.JSON)
+        .body("resultInfo.totalRecords", is(greaterThanOrEqualTo(count - ids.size())));
   }
 
   @Test

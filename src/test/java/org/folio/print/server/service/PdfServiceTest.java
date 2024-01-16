@@ -14,7 +14,8 @@ public class PdfServiceTest {
 
   @Test
   public void createPdfFile(){
-    byte[] result = PdfService.createPdfFile("<div><p>PDF file</p></div><br><p>Content</p>");
+    byte[] result = PdfService.createPdfFile("<div><p>PDF file</p></div><br><p>Content &nbsp; &lt; &gt; "
+        + "&amp; &quot; &apos; &ndash; &mdash; &copy; &reg; &nbsp; &trade;</p>");
     assertTrue(result.length > 0);
   }
 

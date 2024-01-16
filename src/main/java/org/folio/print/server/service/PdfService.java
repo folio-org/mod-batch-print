@@ -1,12 +1,12 @@
 package org.folio.print.server.service;
 
 import com.lowagie.text.DocumentException;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -30,8 +30,7 @@ public class PdfService {
     if (htmlContent != null && !htmlContent.isBlank()) {
       try (PDDocument document = new PDDocument();
            ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-        htmlContent = "<div>" + htmlContent + "</div>";
-        htmlContent = htmlContent.replace("<br>", "<br/>");
+        htmlContent = cleanHtmlData(htmlContent);
         PDPage page = new PDPage(PDRectangle.A4);
         document.addPage(page);
         ITextRenderer renderer = new ITextRenderer();
@@ -46,6 +45,24 @@ public class PdfService {
     return new byte[0];
   }
 
+  private static String cleanHtmlData(String htmlContent) {
+    return "<div>" + htmlContent
+        .replace("<br>", "<br/>")
+        .replace("&nbsp;", "&#160;")
+        .replace("&lt;", "&#60;")
+        .replace("&gt;", "&#62;")
+        .replace("&amp;", "&#38;")
+        .replace("&quot;", "&#34;")
+        .replace("&apos;", "&#39;")
+        .replace("&ndash;", "&#8211;")
+        .replace("&mdash;", "&#8212;")
+        .replace("&copy;", "&#169;")
+        .replace("&reg;", "&#174;")
+        .replace("&nbsp;", "&#160;")
+        .replace("&trade;", "&#8482;")
+        + "</div>";
+  }
+
   /**
    * Combine single print entries in batch print file.
    * @param entries Entries to combine
@@ -57,7 +74,11 @@ public class PdfService {
         PDFMergerUtility pdfMerger = new PDFMergerUtility();
         entries.forEach(e -> {
           if (e.getContent() != null && !e.getContent().isBlank()) {
-            pdfMerger.addSource(new RandomAccessReadBuffer(Hex.decodeHex(e.getContent())));
+            try {
+              pdfMerger.addSource(new ByteArrayInputStream(Hex.decodeHex(e.getContent())));
+            } catch (IOException ex) {
+              LOGGER.error("Failed to merge entry: " + e.getId(), ex);
+            }
           }
         });
         pdfMerger.setDestinationStream(mergedOutputStream);

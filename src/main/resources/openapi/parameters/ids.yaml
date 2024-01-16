@@ -1,0 +1,6 @@
+in: query
+name: ids
+description: Comma seperated IDs of items
+required: true
+schema:
+  type: string
