@@ -56,7 +56,7 @@
           ],
           "pathPattern": "/print/entries",
           "permissionsRequired": [
-            "batch-print.entries.item.delete"
+            "batch-print.entries.collection.delete"
           ],
           "permissionsDesired": [
             "batch-print.print.write"
@@ -179,6 +179,12 @@
       "description": "Delete print entry"
     },
     {
+      "permissionName": "batch-print.entries.collection.delete",
+      "replaces": ["batch-print.entries.item.delete"],
+      "displayName": "batch print - delete print entries",
+      "description": "Delete print entries"
+    },
+    {
       "permissionName": "batch-print.entries.all",
       "displayName": "batch print - all batch print permissions",
       "description": "All batch print permissions",
@@ -188,6 +194,7 @@
         "batch-print.entries.item.get",
         "batch-print.entries.item.put",
         "batch-print.entries.item.delete",
+        "batch-print.entries.collection.delete",
         "batch-print.entries.mail.post",
         "batch-print.print.write",
         "batch-print.print.read"
