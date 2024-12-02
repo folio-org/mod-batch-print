@@ -180,7 +180,6 @@
     },
     {
       "permissionName": "batch-print.entries.collection.delete",
-      "replaces": ["batch-print.entries.item.delete"],
       "displayName": "batch print - delete print entries",
       "description": "Delete print entries"
     },
