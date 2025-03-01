@@ -17,7 +17,7 @@ It is currently implemented with PostgresQL as storage.
 
 Requirements:
 
-* Java 17 or later
+* Java 21 or later
 * Maven 3.6.3 or later
 * Docker (unless `-DskipTests` is used)
 
@@ -28,7 +28,7 @@ Note: Debian package maven-3.6.3-1
 You need `JAVA_HOME` set, e.g.:
 
    * Linux: `export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:bin/javac::")`
-   * macOS: `export JAVA_HOME=$(/usr/libexec/java_home -v 17)`
+   * macOS: `export JAVA_HOME=$(/usr/libexec/java_home -v 21)`
 
 Build all components with: `mvn install`
 
