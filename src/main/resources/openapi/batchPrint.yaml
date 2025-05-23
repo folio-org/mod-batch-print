@@ -166,7 +166,6 @@ paths:
           $ref: "#/components/responses/trait_500"
   /print/batch-creation:
     parameters:
-      - $ref: headers/okapi-permissions.yaml
       - $ref: headers/okapi-tenant.yaml
       - $ref: headers/okapi-token.yaml
       - $ref: headers/okapi-url.yaml
