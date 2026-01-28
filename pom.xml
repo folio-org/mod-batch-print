@@ -29,13 +29,13 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <okapi.version>5.3.0</okapi.version>
-    <vertxlib.version>3.2.0</vertxlib.version>
-    <vertx.version>4.5.3</vertx.version>
-    <lombok.version>1.18.30</lombok.version>
-    <pdfbox.version>2.0.30</pdfbox.version>
-    <jackson.version>2.16.1</jackson.version>
-    <flying-saucer-pdf.version>9.4.1</flying-saucer-pdf.version>
+    <okapi.version>6.2.6</okapi.version>
+    <vertxlib.version>3.4.1</vertxlib.version>
+    <vertx.version>4.5.24</vertx.version>
+    <lombok.version>1.18.42</lombok.version>
+    <pdfbox.version>2.0.35</pdfbox.version>
+    <jackson.version>2.21.0</jackson.version>
+    <flying-saucer-pdf.version>9.13.3</flying-saucer-pdf.version>
     <vertx.launcher>io.vertx.core.Launcher</vertx.launcher>
     <vertx.verticle>org.folio.print.server.main.MainVerticle</vertx.verticle>
   </properties>
@@ -72,15 +72,6 @@
     <dependency>
       <groupId>org.folio</groupId>
       <artifactId>vertx-lib</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.folio.okapi</groupId>
@@ -123,12 +114,6 @@
       <artifactId>rest-assured</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- logging see http://www.slf4j.org/legacy.html -->
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-slf4j-impl</artifactId>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>org.folio</groupId>
       <artifactId>vertx-lib-pg-testing</artifactId>
@@ -146,7 +131,7 @@
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>postgresql</artifactId>
+      <artifactId>testcontainers-postgresql</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -158,6 +143,13 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-bom</artifactId>
+        <version>2.25.3</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <dependency>
         <groupId>io.vertx</groupId>
         <artifactId>vertx-stack-depchain</artifactId>
@@ -174,13 +166,6 @@
         <groupId>org.folio</groupId>
         <artifactId>vertx-lib-pg-testing</artifactId>
         <version>${vertxlib.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-bom</artifactId>
-        <version>2.19.0</version>
-        <type>pom</type>
-        <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.folio.okapi</groupId>
@@ -200,12 +185,12 @@
       <dependency>
         <groupId>io.rest-assured</groupId>
         <artifactId>rest-assured</artifactId>
-        <version>5.4.0</version>
+        <version>6.0.0</version>
       </dependency>
       <dependency>
         <groupId>org.testcontainers</groupId>
         <artifactId>testcontainers-bom</artifactId>
-        <version>1.19.3</version>
+        <version>2.0.3</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -217,7 +202,7 @@
       <dependency>
         <groupId>org.awaitility</groupId>
         <artifactId>awaitility</artifactId>
-        <version>4.2.0</version>
+        <version>4.3.0</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson</groupId>
