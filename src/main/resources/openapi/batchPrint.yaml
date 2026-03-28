@@ -5,19 +5,18 @@ info:
 paths:
   /print/entries:
     parameters:
-      - $ref: headers/okapi-permissions.yaml
-      - $ref: headers/okapi-tenant.yaml
-      - $ref: headers/okapi-token.yaml
-      - $ref: headers/okapi-url.yaml
-      - $ref: headers/okapi-user.yaml
+      - $ref: "#/components/parameters/okapi_tenant"
+      - $ref: "#/components/parameters/okapi_token"
+      - $ref: "#/components/parameters/okapi_url"
+      - $ref: "#/components/parameters/okapi_user"
     get:
       description: >
         Get batch printing entries with optional CQL query.
         X-Okapi-Permissions must include batch-print.entries.collection.get
       parameters:
-        - $ref: parameters/limit.yaml
-        - $ref: parameters/offset.yaml
-        - $ref: parameters/query.yaml
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/offset"
+        - $ref: "#/components/parameters/query"
       operationId: getPrintEntries
       responses:
         "200":
@@ -25,7 +24,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: schemas/entries.json
+                $ref: "#/components/schemas/entries"
         "400":
           $ref: "#/components/responses/trait_400"
         "404":
@@ -37,7 +36,7 @@ paths:
         Delete batch printing entries by  comma separated IDs.
         X-Okapi-Permissions must include batch-print.entries.collection.delete
       parameters:
-        - $ref: parameters/ids.yaml
+        - $ref: "#/components/parameters/ids"
       operationId: deletePrintEntries
       responses:
         "204":
@@ -55,7 +54,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: schemas/entry.json
+              $ref: "#/components/schemas/entry"
       responses:
         "204":
           description: Print entry created
@@ -69,11 +68,10 @@ paths:
           $ref: "#/components/responses/trait_500"
   /print/entries/{id}:
     parameters:
-      - $ref: headers/okapi-permissions.yaml
-      - $ref: headers/okapi-tenant.yaml
-      - $ref: headers/okapi-token.yaml
-      - $ref: headers/okapi-url.yaml
-      - $ref: headers/okapi-user.yaml
+      - $ref: "#/components/parameters/okapi_tenant"
+      - $ref: "#/components/parameters/okapi_token"
+      - $ref: "#/components/parameters/okapi_url"
+      - $ref: "#/components/parameters/okapi_user"
       - in: path
         name: id
         required: true
@@ -92,7 +90,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: schemas/entry.json
+                $ref: "#/components/schemas/entry"
         "400":
           $ref: "#/components/responses/trait_400"
         "403":
@@ -124,7 +122,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: schemas/entry.json
+              $ref: "#/components/schemas/entry"
       responses:
         "204":
           description: Print entry update
@@ -136,11 +134,10 @@ paths:
           $ref: "#/components/responses/trait_500"
   /mail:
     parameters:
-      - $ref: headers/okapi-permissions.yaml
-      - $ref: headers/okapi-tenant.yaml
-      - $ref: headers/okapi-token.yaml
-      - $ref: headers/okapi-url.yaml
-      - $ref: headers/okapi-user.yaml
+      - $ref: "#/components/parameters/okapi_tenant"
+      - $ref: "#/components/parameters/okapi_token"
+      - $ref: "#/components/parameters/okapi_url"
+      - $ref: "#/components/parameters/okapi_user"
     post:
       description: >
         Send mail to create print entry.
@@ -150,14 +147,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: schemas/messageRequest.json
+              $ref: "#/components/schemas/messageRequest"
       responses:
         "200":
           description: Print entry created
           content:
             application/json:
               schema:
-                $ref: schemas/messageResponse.json
+                $ref: "#/components/schemas/messageResponse"
         "400":
           $ref: "#/components/responses/trait_400"
         "403":
@@ -166,10 +163,10 @@ paths:
           $ref: "#/components/responses/trait_500"
   /print/batch-creation:
     parameters:
-      - $ref: headers/okapi-tenant.yaml
-      - $ref: headers/okapi-token.yaml
-      - $ref: headers/okapi-url.yaml
-      - $ref: headers/okapi-user.yaml
+      - $ref: "#/components/parameters/okapi_tenant"
+      - $ref: "#/components/parameters/okapi_token"
+      - $ref: "#/components/parameters/okapi_url"
+      - $ref: "#/components/parameters/okapi_user"
     post:
       description: >
         Send mail to create print entry.
@@ -185,6 +182,67 @@ paths:
         "500":
           $ref: "#/components/responses/trait_500"
 components:
+  parameters:
+    okapi_tenant:
+      in: header
+      name: X-Okapi-Tenant
+      description: Okapi Tenant
+      required: true
+      schema:
+        type: string
+    okapi_token:
+      in: header
+      name: X-Okapi-Token
+      description: Okapi Token
+      required: false
+      schema:
+        type: string
+    okapi_url:
+      in: header
+      name: X-Okapi-Url
+      description: Okapi URL
+      required: false
+      schema:
+        type: string
+    okapi_user:
+      in: header
+      name: X-Okapi-User-Id
+      description: Okapi user identifier
+      required: false
+      schema:
+        type: string
+    query:
+      in: query
+      name: query
+      description: CQL query
+      required: false
+      schema:
+        type: string
+    offset:
+      in: query
+      name: offset
+      description: Skip over number of elements (default is first element)
+      required: false
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+    limit:
+      in: query
+      name: limit
+      description: Limit the number of elements returned in the response
+      required: false
+      schema:
+        type: integer
+        default: 10
+        minimum: 0
+    ids:
+      in: query
+      name: ids
+      description: Comma-separated IDs of items
+      required: true
+      schema:
+        type: string
   responses:
     trait_400:
       description: Bad request
@@ -233,6 +291,118 @@ components:
             type: string
             example: Internal server error, contact administrator
   schemas:
-    errors:
-      $ref: schemas/errors.json
+    entries:
+      description: Print entries response,
+      type: object
+      properties:
+        items:
+          description: List of print entries
+          type: array
+          items:
+            $ref: "#/components/schemas/entry"
+        resultInfo:
+          $ref: "#/components/schemas/resultInfo"
+      additionalProperties: false
+      required:
+        - items
+    entry:
+      description: Print entry
+      type: object
+      properties:
+        id:
+          description: Identifier
+          type: string
+          format: uuid
+        created:
+          type: string
+          description: Creation date time
+        type:
+          type: string
+          description: Print entry type
+        sortingField:
+          type: string
+          description: Print entry sorting field
+        content:
+          type: string
+          description: Print entry content
+      additionalProperties: false
+      required:
+        - id
+        - created
+        - type
+        - content
+    resultInfo:
+      description: Common result set information for streaming response
+      type: object
+      properties:
+        totalRecords:
+          description: Total number of entries in response
+          type: integer
+        diagnostics:
+          description: Diagnostics for response
+          type: array
+          items:
+            type: object
+            properties:
+              message:
+                description: single diagnostic message
+                type: string
+        facets:
+          type: array
+          description: Array of facets
+          items:
+            type: object
+            description: A facet
+            properties:
+              facetValues:
+                type: array
+                description: Array of facet values
+                items:
+                  type: object
+                  description: A facet value
+                  properties:
+                    count:
+                      type: integer
+                      description: Count of facet values
+                    value:
+                      description: Value Object
+              type:
+                type: string
+                description: Type of facet
+      additionalProperties: false
+    messageRequest:
+      description: The mail message that can be sent via mail
+      title: Mail Entity Schema
+      type: object
+      properties:
+        notificationId:
+          description: notification ID
+          type: string
+        from:
+          description: sender's address
+          type: string
+        to:
+          description: receiver's address
+          type: string
+        outputFormat:
+          description: "format type: `text/html` or `text/plain`"
+          type: string
+        body:
+          description: text of email
+          type: string
+      additionalProperties: true
+      required:
+        - body
+    messageResponse:
+      description: Mail message response
+      type: object
+      properties:
+        id:
+          description: Identifier
+          type: string
+          format: uuid
+      additionalProperties: true
+      required:
+        - id
+
 

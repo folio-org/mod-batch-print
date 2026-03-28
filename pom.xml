@@ -29,16 +29,94 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <okapi.version>5.3.0</okapi.version>
-    <vertxlib.version>3.2.0</vertxlib.version>
-    <vertx.version>4.5.3</vertx.version>
+    <okapi.version>7.0.1</okapi.version>
+    <vertxlib.version>4.1.1</vertxlib.version>
+    <vertx.version>5.0.8</vertx.version>
+    <log4j.version>2.25.3</log4j.version>
     <lombok.version>1.18.30</lombok.version>
     <pdfbox.version>2.0.30</pdfbox.version>
     <jackson.version>2.16.1</jackson.version>
     <flying-saucer-pdf.version>9.4.1</flying-saucer-pdf.version>
-    <vertx.launcher>io.vertx.core.Launcher</vertx.launcher>
-    <vertx.verticle>org.folio.print.server.main.MainVerticle</vertx.verticle>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-bom</artifactId>
+        <version>${log4j.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-stack-depchain</artifactId>
+        <version>${vertx.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.folio</groupId>
+        <artifactId>vertx-lib</artifactId>
+        <version>${vertxlib.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.folio</groupId>
+        <artifactId>vertx-lib-pg-testing</artifactId>
+        <version>${vertxlib.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>3.20.0</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.folio.okapi</groupId>
+        <artifactId>okapi-common</artifactId>
+        <version>${okapi.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.folio.okapi</groupId>
+        <artifactId>okapi-core</artifactId>
+        <version>${okapi.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.folio.okapi</groupId>
+        <artifactId>okapi-testing</artifactId>
+        <version>${okapi.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.rest-assured</groupId>
+        <artifactId>rest-assured</artifactId>
+        <version>5.4.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-bom</artifactId>
+        <version>1.20.6</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.13.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.awaitility</groupId>
+        <artifactId>awaitility</artifactId>
+        <version>4.2.0</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson</groupId>
+        <artifactId>jackson-bom</artifactId>
+        <version>${jackson.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <dependency>
@@ -47,19 +125,19 @@
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
+      <artifactId>vertx-launcher-application</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
       <artifactId>vertx-web</artifactId>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
-      <artifactId>vertx-web-openapi</artifactId>
+      <artifactId>vertx-web-openapi-router</artifactId>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-rx-java2</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-web-api-contract</artifactId>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
@@ -80,7 +158,6 @@
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.folio.okapi</groupId>
@@ -126,7 +203,12 @@
     <!-- logging see http://www.slf4j.org/legacy.html -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-slf4j-impl</artifactId>
+      <artifactId>log4j-slf4j2-impl</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-jul</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -156,79 +238,6 @@
     </dependency>
   </dependencies>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>io.vertx</groupId>
-        <artifactId>vertx-stack-depchain</artifactId>
-        <version>${vertx.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.folio</groupId>
-        <artifactId>vertx-lib</artifactId>
-        <version>${vertxlib.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.folio</groupId>
-        <artifactId>vertx-lib-pg-testing</artifactId>
-        <version>${vertxlib.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-bom</artifactId>
-        <version>2.19.0</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.folio.okapi</groupId>
-        <artifactId>okapi-common</artifactId>
-        <version>${okapi.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.folio.okapi</groupId>
-        <artifactId>okapi-core</artifactId>
-        <version>${okapi.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.folio.okapi</groupId>
-        <artifactId>okapi-testing</artifactId>
-        <version>${okapi.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.rest-assured</groupId>
-        <artifactId>rest-assured</artifactId>
-        <version>5.4.0</version>
-      </dependency>
-      <dependency>
-        <groupId>org.testcontainers</groupId>
-        <artifactId>testcontainers-bom</artifactId>
-        <version>1.19.3</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>4.13.2</version>
-      </dependency>
-      <dependency>
-        <groupId>org.awaitility</groupId>
-        <artifactId>awaitility</artifactId>
-        <version>4.2.0</version>
-      </dependency>
-      <dependency>
-        <groupId>com.fasterxml.jackson</groupId>
-        <artifactId>jackson-bom</artifactId>
-        <version>${jackson.version}</version>
-        <scope>import</scope>
-        <type>pom</type>
-      </dependency>
-    </dependencies>
-
-  </dependencyManagement>
 
   <build>
     <plugins>
@@ -246,8 +255,8 @@
               <transformers>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                   <manifestEntries>
-                    <Main-Class>${vertx.launcher}</Main-Class>
-                    <Main-Verticle>${vertx.verticle}</Main-Verticle>
+                    <Main-Class>io.vertx.launcher.application.VertxApplication</Main-Class>
+                    <Main-Verticle>org.folio.print.server.main.MainVerticle</Main-Verticle>
                     <Multi-Release>true</Multi-Release>
                   </manifestEntries>
                 </transformer>

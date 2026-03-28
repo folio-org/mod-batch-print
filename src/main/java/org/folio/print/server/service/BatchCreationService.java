@@ -2,7 +2,6 @@ package org.folio.print.server.service;
 
 import io.vertx.ext.web.RoutingContext;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -10,10 +9,10 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.pdfbox.util.Hex;
-import org.folio.okapi.common.XOkapiHeaders;
 import org.folio.print.server.data.PrintEntry;
 import org.folio.print.server.data.PrintEntryType;
 import org.folio.print.server.storage.PrintStorage;
+import org.folio.tlib.util.TenantUtil;
 
 public class BatchCreationService {
   private static final Logger LOGGER = LogManager.getLogger(BatchCreationService.class);
@@ -27,7 +26,7 @@ public class BatchCreationService {
    * @param ctx Batch creation request context
    */
   public static void process(RoutingContext ctx) {
-    String tenant = ctx.request().getHeader(XOkapiHeaders.TENANT);
+    String tenant = TenantUtil.tenant(ctx);
     PrintStorage printStorage = new PrintStorage(ctx.vertx(), tenant);
     LocalDateTime localDateTime = LocalDateTime.now().minusDays(1).minusMinutes(5);
     LOGGER.info("process:: tenant {}, from {}", tenant, localDateTime);
