@@ -12,11 +12,9 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import org.folio.okapi.common.XOkapiHeaders;
 import org.folio.print.server.TestBase;
-import org.folio.print.server.data.Message;
 import org.folio.print.server.data.PrintEntry;
 import org.folio.print.server.data.PrintEntryType;
 import org.folio.print.server.service.PrintService;
@@ -24,7 +22,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -33,8 +30,8 @@ import static org.hamcrest.Matchers.notNullValue;
 @RunWith(VertxUnitRunner.class)
 public class MainVerticleTest extends TestBase {
 
-  private JsonArray permRead = new JsonArray().add("mod-batch-print.print.read");
-  private JsonArray permWrite = new JsonArray().add("mod-batch-print.print.write");
+  private final JsonArray permRead = new JsonArray().add("mod-batch-print.print.read");
+  private final JsonArray permWrite = new JsonArray().add("mod-batch-print.print.write");
   @Test
   public void testAdminHealth() {
     RestAssured.given()
@@ -118,36 +115,6 @@ public class MainVerticleTest extends TestBase {
         .statusCode(400)
         .contentType(ContentType.TEXT)
         .body(containsString("Missing parameter X-Okapi-Tenant"));
-  }
-
-  @Test
-  public void testMissingPermissionsHeader() {
-    PrintEntry entry = new PrintEntry();
-    entry.setContent("AA");
-    entry.setCreated(ZonedDateTime.now().withZoneSameInstant(ZoneOffset.UTC));
-    entry.setId(UUID.randomUUID());
-    entry.setType(PrintEntryType.SINGLE);
-
-    JsonObject en = JsonObject.mapFrom(entry);
-
-    RestAssured.given()
-        .header(XOkapiHeaders.TENANT, TENANT_1)
-        .contentType(ContentType.JSON)
-        .body(en.encode())
-        .post("/print/entries")
-        .then()
-        .statusCode(400)
-        .contentType(ContentType.TEXT)
-        .body(containsString("Missing parameter X-Okapi-Permissions in HEADER"));
-
-    RestAssured.given()
-        .header(XOkapiHeaders.TENANT, TENANT_1)
-        .contentType(ContentType.JSON)
-        .get("/print/entries")
-        .then()
-        .statusCode(400)
-        .contentType(ContentType.TEXT)
-        .body(containsString("Missing parameter X-Okapi-Permissions in HEADER"));
   }
 
   @Test

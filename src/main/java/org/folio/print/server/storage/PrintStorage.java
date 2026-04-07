@@ -275,7 +275,7 @@ public class PrintStorage {
                       log.error(f.getMessage(), f);
                       resultFooter(response, null, f.getMessage());
                     })
-                    .eventually(x -> tx.commit().compose(y -> connection.close()));
+                    .eventually(() -> tx.commit().compose(y -> connection.close()));
               });
               stream.exceptionHandler(e -> {
                 log.error("stream error {}", e.getMessage(), e);

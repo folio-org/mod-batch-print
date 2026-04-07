@@ -59,7 +59,7 @@ public class MainVerticle extends AbstractVerticle {
         new LocalDateTimeDeserializer(DateTimeFormatter.ISO_DATE_TIME));
     DatabindCodec.mapper().registerModule(javaTimeModule)
         .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-    DatabindCodec.prettyMapper().registerModule(javaTimeModule)
+    DatabindCodec.mapper().registerModule(javaTimeModule)
         .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
   }
 
