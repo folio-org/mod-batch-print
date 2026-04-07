@@ -64,7 +64,7 @@ public class MainVerticleTest extends TestBase {
 
     RestAssured.given()
         .header(XOkapiHeaders.TENANT, TENANT_1)
-        .header(XOkapiHeaders.PERMISSIONS, permRead)
+        .header(XOkapiHeaders.PERMISSIONS, permRead.encode())
         .get("/print/entries/" + entry.getId())
         .then()
         .statusCode(200)
