@@ -1,3 +1,7 @@
+## 1.4.0 2026-04-15
+
+* Vert.x 5. and other dependency upgrades, bugfixes [MODBATPRNT-18](https://folio-org.atlassian.net/browse/MODBATPRNT-18), [MODBATPRNT-16](https://folio-org.atlassian.net/browse/MODBATPRNT-16), [MODBATPRNT-16](https://folio-org.atlassian.net/browse/MODBATPRNT-16)
+
 ## 1.3.0 2025-03-10
 
 * [MODBATPRNT-12](https://folio-org.atlassian.net/browse/MODBATPRNT-12) Java 21.
