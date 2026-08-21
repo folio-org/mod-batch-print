@@ -31,10 +31,10 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <okapi.version>6.2.6</okapi.version>
     <vertxlib.version>3.4.1</vertxlib.version>
-    <vertx.version>4.5.24</vertx.version>
+    <vertx.version>4.5.32</vertx.version>
     <lombok.version>1.18.42</lombok.version>
     <pdfbox.version>2.0.35</pdfbox.version>
-    <jackson.version>2.21.0</jackson.version>
+    <jackson.version>2.22.1</jackson.version>
     <flying-saucer-pdf.version>9.13.3</flying-saucer-pdf.version>
     <vertx.launcher>io.vertx.core.Launcher</vertx.launcher>
     <vertx.verticle>org.folio.print.server.main.MainVerticle</vertx.verticle>
@@ -146,7 +146,7 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-bom</artifactId>
-        <version>2.25.3</version>
+        <version>2.25.5</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
