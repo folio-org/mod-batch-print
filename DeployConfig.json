@@ -1,0 +1,103 @@
+{
+  "description": "mod-batch-print configuration template. Reference baseline: Bugfest with 3 standalone tenants and 11 consortia tenants. Memory, JVM limits and replica count match the published Trillium (R1 2026) module configuration table: https://folio-org.atlassian.net/wiki/spaces/REL/pages/1034125338. A complete Bugfest baseline for this module's environment variables, CPU allocation, Kong timeouts and sidecar settings could not be found; these values remain unverified against Bugfest. CPU uses the implementation guide's fallback; database port and pool size use ModuleDescriptor-template.json defaults. Environment-specific database settings must be supplied at deployment. JAVA_OPTIONS uses the published Bugfest JVM limits instead of the descriptor's percentage-based heap setting. Empty sidecar arrays satisfy the local schema without prescribing unverified sidecar defaults.",
+  "moduleDefaults": {
+    "resources": [
+      {
+        "name": "cpu",
+        "value": "64",
+        "description": "CPU units; implementation guide fallback, not verified against Bugfest."
+      },
+      {
+        "name": "memory",
+        "value": "1024",
+        "description": "Container memory hard limit in MiB from the Trillium Bugfest baseline."
+      },
+      {
+        "name": "memoryReservation",
+        "value": "896",
+        "description": "Container memory reservation in MiB from the Trillium Bugfest baseline."
+      }
+    ],
+    "java": [
+      {
+        "name": "xmx",
+        "value": "768m",
+        "description": "Maximum Java heap size from the Trillium Bugfest baseline."
+      },
+      {
+        "name": "MaxMetaspaceSize",
+        "value": "128m",
+        "description": "Maximum Java metaspace size from the Trillium Bugfest baseline."
+      }
+    ],
+    "deployment": {
+      "isHaSupported": true,
+      "replicasRecommendedCount": 2,
+      "description": "Two instances match the Trillium Bugfest baseline; the gateway schedules batch creation through the _timer interface, so avoid concurrent batch-creation requests for the same tenant."
+    },
+    "kong": {
+      "timeouts": {
+        "connect": "60s",
+        "send": "60s",
+        "read": "120s"
+      },
+      "description": "General gateway timeout defaults from the implementation guide; not verified against Bugfest, so adjust for measured PDF processing and retrieval times."
+    },
+    "EnvVars": [
+      {
+        "name": "JAVA_OPTIONS",
+        "value": "-Xmx768m -XX:MaxMetaspaceSize=128m",
+        "description": "JVM options matching the published Bugfest heap and metaspace limits; adjust together with the container memory limit and java entries.",
+        "type": "CONFIG",
+        "essential": false
+      },
+      {
+        "name": "DB_HOST",
+        "value": null,
+        "description": "PostgreSQL server hostname supplied for the deployment.",
+        "type": "DB",
+        "essential": true
+      },
+      {
+        "name": "DB_PORT",
+        "value": "5432",
+        "description": "PostgreSQL server port; change when using a nonstandard database port.",
+        "type": "DB",
+        "essential": false
+      },
+      {
+        "name": "DB_USERNAME",
+        "value": null,
+        "description": "PostgreSQL account supplied for the deployment with access to the module's tenant schemas.",
+        "type": "DB",
+        "essential": true
+      },
+      {
+        "name": "DB_PASSWORD",
+        "value": null,
+        "description": "PostgreSQL account password supplied securely at deployment.",
+        "type": "DB",
+        "essential": true
+      },
+      {
+        "name": "DB_DATABASE",
+        "value": null,
+        "description": "PostgreSQL database containing the module's tenant schemas, supplied for the deployment.",
+        "type": "DB",
+        "essential": true
+      },
+      {
+        "name": "DB_MAXPOOLSIZE",
+        "value": "5",
+        "description": "Maximum connections per database pool; descriptor default, to be tuned against database capacity and tenant load.",
+        "type": "DB",
+        "essential": false
+      }
+    ]
+  },
+  "sidecarDefaults": {
+    "resources": [],
+    "java": [],
+    "EnvVars": []
+  }
+}
