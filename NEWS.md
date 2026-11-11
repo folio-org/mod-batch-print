@@ -1,3 +1,7 @@
+## 1.4.1 2026-11-11
+
+* [MODBATPRNT-22](https://folio-org.atlassian.net/browse/MODBATPRNT-22) Add DeployConfig.json
+
 ## 1.4.0 2026-04-15
 
 * Vert.x 5. and other dependency upgrades, bugfixes [MODBATPRNT-18](https://folio-org.atlassian.net/browse/MODBATPRNT-18), [MODBATPRNT-16](https://folio-org.atlassian.net/browse/MODBATPRNT-16), [MODBATPRNT-16](https://folio-org.atlassian.net/browse/MODBATPRNT-16)
