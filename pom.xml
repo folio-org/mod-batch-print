@@ -304,6 +304,7 @@
         <version>3.8.1</version>
         <configuration>
           <release>25</release>
+          <proc>full</proc>
           <encoding>UTF-8</encoding>
         </configuration>
       </plugin>
