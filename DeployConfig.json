@@ -1,5 +1,5 @@
 {
-  "description": "mod-batch-print configuration template. Reference baseline: Bugfest with 3 standalone tenants and 11 consortia tenants. Memory, JVM limits and replica count match the published Trillium (R1 2026) module configuration table: https://folio-org.atlassian.net/wiki/spaces/REL/pages/1034125338. A complete Bugfest baseline for this module's environment variables, CPU allocation, Kong timeouts and sidecar settings could not be found; these values remain unverified against Bugfest. CPU uses the implementation guide's fallback; database port and pool size use ModuleDescriptor-template.json defaults. Environment-specific database settings must be supplied at deployment. JAVA_OPTIONS uses the published Bugfest JVM limits instead of the descriptor's percentage-based heap setting. Empty sidecar arrays satisfy the local schema without prescribing unverified sidecar defaults.",
+  "description": "mod-batch-print configuration template. Reference baseline: Bugfest with 3 standalone tenants and 11 consortia tenants. Memory, JVM limits and replica count match the published Trillium (R1 2026) module configuration table: https://folio-org.atlassian.net/wiki/spaces/REL/pages/1034125338. A complete Bugfest baseline for this module's environment variables, CPU allocation, Kong timeouts and sidecar settings could not be found; these values remain unverified against Bugfest. CPU uses the implementation guide's fallback; database port and pool size use ModuleDescriptor-template.json defaults. Environment-specific database settings must be supplied at deployment. JAVA_TOOL_OPTIONS uses the published Bugfest JVM limits instead of the descriptor's percentage-based heap setting. Empty sidecar arrays satisfy the local schema without prescribing unverified sidecar defaults.",
   "moduleDefaults": {
     "resources": [
       {
@@ -45,7 +45,7 @@
     },
     "EnvVars": [
       {
-        "name": "JAVA_OPTIONS",
+        "name": "JAVA_TOOL_OPTIONS",
         "value": "-Xmx768m -XX:MaxMetaspaceSize=128m",
         "description": "JVM options matching the published Bugfest heap and metaspace limits; adjust together with the container memory limit and java entries.",
         "type": "CONFIG",

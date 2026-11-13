@@ -17,7 +17,7 @@ It is currently implemented with PostgresQL as storage.
 
 Requirements:
 
-* Java 21 or later
+* Java 25 or later
 * Maven 3.6.3 or later
 * Docker (unless `-DskipTests` is used)
 
@@ -28,7 +28,7 @@ Note: Debian package maven-3.6.3-1
 You need `JAVA_HOME` set, e.g.:
 
    * Linux: `export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:bin/javac::")`
-   * macOS: `export JAVA_HOME=$(/usr/libexec/java_home -v 21)`
+   * macOS: `export JAVA_HOME=$(/usr/libexec/java_home -v 25)`
 
 Build all components with: `mvn install`
 
@@ -104,7 +104,6 @@ and the additional module metadata.
 API descriptions:
 
  * [OpenAPI](src/main/resources/openapi/batchPrint.yaml)
- * [Schemas](src/main/resources/openapi/schemas/)
 
 Generated [API documentation](https://dev.folio.org/reference/api/#mod-batch-print).
 
